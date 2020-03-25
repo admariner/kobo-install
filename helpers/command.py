@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
+import os
 import sys
 import time
 import subprocess
@@ -329,6 +330,15 @@ class Command:
                                   "KoboToolbox can't start".format(port),
                                   CLI.COLOR_ERROR)
                 sys.exit(1)
+
+        stream = os.popen('sudo ufw status')
+        output = stream.read()
+        if not ("inactive" in output):
+            CLI.colored_print(" ------------------------------------------------------ ", CLI.COLOR_ERROR)
+            CLI.colored_print("|  Your firewall is currently running. If there is no  |", CLI.COLOR_ERROR)
+            CLI.colored_print("|  rule in place KPI will not connect with backend.    |", CLI.COLOR_ERROR)
+            CLI.colored_print(" ------------------------------------------------------ ", CLI.COLOR_ERROR)
+            sys.exit(1)
 
         # Start the back-end containers
         if not frontend_only:
